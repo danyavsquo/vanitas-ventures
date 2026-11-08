@@ -18,7 +18,8 @@ export function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-5">
       <nav className="flex items-center gap-1 rounded-full border border-foreground/15 bg-foreground/[0.04] p-1 backdrop-blur-md">
         {links.map(({ href, label }) => {
-          const active = pathname === href;
+          // trailingSlash (next.config) can leave a trailing "/" on the pathname.
+          const active = (pathname.replace(/\/+$/, "") || "/") === href;
           return (
             <Link
               key={href}

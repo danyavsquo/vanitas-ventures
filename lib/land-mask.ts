@@ -1,3 +1,5 @@
+import { asset } from "@/lib/base-path";
+
 // Fine land/sea mask for /map, loaded from public/map/land.bin.
 // Equirectangular grid, MASK_STEP degrees per cell, 80°N down to 58°S, west to east from 180°W.
 // The file stores each row as run lengths (sea, land, sea, …) in LEB128 varints.
@@ -8,7 +10,7 @@ export const MASK_LAT_TOP = 80;
 export const MASK_LAT_BOTTOM = -58;
 export const MASK_W = Math.round(360 / MASK_STEP);
 export const MASK_H = Math.round((MASK_LAT_TOP - MASK_LAT_BOTTOM) / MASK_STEP);
-const MASK_URL = "/map/land.bin?v=1";
+const MASK_URL = asset("/map/land.bin?v=1");
 
 export type LandMask = {
   /** Is the point land? lon -180..180, lat in the mask range (outside counts as sea). */
