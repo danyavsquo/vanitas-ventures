@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+/* The site has one fixed brown theme: `dark:` only applies under an explicit .dark class, never from the OS setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+}
+
+:root {
+  --background: #6f4b2f;
+  --foreground: #ffffff;
+  --primary: #ffffff;
+  --card: #7d5838;
+  --border: rgba(255, 255, 255, 0.15);
+  --primary-foreground: #6f4b2f;
+  --accent: rgba(255, 255, 255, 0.12);
+  --accent-foreground: #ffffff;
+  --secondary: rgba(255, 255, 255, 0.1);
+  --secondary-foreground: #ffffff;
+  --destructive: #b42318;
+  --destructive-foreground: #ffffff;
+  --input: rgba(255, 255, 255, 0.2);
+  --ring: rgba(255, 255, 255, 0.5);
+}
+
+/* Every page is a single fixed screen: no scrolling anywhere.
+   Pinning body with position: fixed also stops Safari's rubber-band bounce,
+   which overflow: hidden alone does not. */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Faint dot grid behind the home screen; spacing matches the dot-matrix step (4px dot + 2.5px gap). */
+.dot-texture {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.09) 0.8px, transparent 1.1px);
+  background-size: 6.5px 6.5px;
+}
