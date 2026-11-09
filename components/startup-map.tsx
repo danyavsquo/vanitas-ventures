@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { ArrowUpRight, Maximize2, Minus, Plus, X } from "lucide-react";
+import { Maximize2, Minus, Plus } from "lucide-react";
+import { StartupPanel, StartupPin } from "@/components/startup-panel";
 import { loadLandMask, MASK_LAT_BOTTOM, MASK_LAT_TOP, MASK_STEP, type LandMask } from "@/lib/land-mask";
 import { startups, type Startup } from "@/lib/startups";
-import { cn } from "@/lib/utils";
 
 // World space is in degrees: x = lng + 180, y = top latitude - lat.
 const LAT_TOP = MASK_LAT_TOP;
@@ -326,7 +326,13 @@ export function StartupMap() {
   const atMin = view ? view.s <= minScale(sizeRef.current) + 1e-6 : true;
   const atMax = view ? view.s >= MAX_SCALE - 1e-6 : false;
 
+  const closePanel = React.useCallback(() => {
+    setSelected(null);
+    wrapRef.current?.focus();
+  }, []);
+
   return (
+    <>
     <div
       ref={wrapRef}
       tabIndex={0}
@@ -351,9 +357,7 @@ export function StartupMap() {
               left={view.x + p.x * view.s}
               top={view.y + p.y * view.s}
               size={Math.max(10, Math.min(22, levelFor(view.s) * view.s * 1.5))}
-              open={selected === i}
               onOpen={() => focusStartup(i)}
-              onClose={() => setSelected(null)}
             />
           );
         })}
@@ -382,6 +386,10 @@ export function StartupMap() {
         </ControlButton>
       </div>
     </div>
+    {selected !== null && startups[selected] && (
+      <StartupPanel startup={startups[selected]} mask={mask} onClose={closePanel} />
+    )}
+    </>
   );
 }
 
@@ -415,74 +423,32 @@ function StartupMarker({
   left,
   top,
   size,
-  open,
   onOpen,
-  onClose,
 }: {
   startup: Startup;
   left: number;
   top: number;
   size: number;
-  open: boolean;
   onOpen: () => void;
-  onClose: () => void;
 }) {
   return (
     <div
-      className={cn("absolute", open ? "z-20" : "z-10")}
+      className="absolute z-10"
       style={{ transform: `translate(${left}px, ${top}px)`, left: 0, top: 0 }}
       onPointerDown={(e) => e.stopPropagation()}
     >
       <button
         type="button"
-        aria-label={startup.name}
-        aria-expanded={open}
-        onClick={open ? onClose : onOpen}
+        aria-label={`${startup.name}: show details`}
+        aria-haspopup="dialog"
+        onClick={onOpen}
         className="group absolute -translate-x-1/2 -translate-y-1/2 rounded-full p-2"
       >
-        <span
-          className="relative block rounded-full bg-foreground shadow-[0_0_0_4px_rgba(111,75,47,.9),0_0_0_5px_rgba(255,255,255,.5)] transition-transform group-hover:scale-110"
-          style={{ width: size, height: size }}
-        >
-          <span className="absolute inset-0 animate-ping rounded-full bg-foreground/50 [animation-duration:2.4s]" />
+        <StartupPin startup={startup} dotSize={size} />
+        <span className="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded-full border border-foreground/15 bg-background/70 px-3 py-1 text-xs font-medium text-foreground opacity-0 backdrop-blur-md transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+          {startup.name}
         </span>
-        {!open && (
-          <span className="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded-full border border-foreground/15 bg-background/70 px-3 py-1 text-xs font-medium text-foreground opacity-0 backdrop-blur-md transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-            {startup.name}
-          </span>
-        )}
       </button>
-
-      {open && (
-        <div
-          role="dialog"
-          aria-label={startup.name}
-          className="absolute left-0 top-0 w-64 rounded-2xl border border-foreground/15 bg-background/80 p-4 text-left text-foreground shadow-[0_12px_32px_rgba(0,0,0,.25)] backdrop-blur-md"
-          style={{ transform: `translate(-50%, calc(-100% - ${size / 2 + 16}px))` }}
-        >
-          <button
-            type="button"
-            aria-label="Close"
-            onClick={onClose}
-            className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full text-foreground/60 hover:bg-foreground/10 hover:text-foreground"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-          <h2 className="pr-6 text-base font-semibold leading-tight">{startup.name}</h2>
-          {startup.location && <p className="mt-1 text-xs text-foreground/60">{startup.location}</p>}
-          {startup.description && <p className="mt-2 text-sm leading-snug text-foreground/80">{startup.description}</p>}
-          {startup.href && (
-            <a
-              href={startup.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-medium text-background transition-opacity hover:opacity-85"
-            >
-              Visit <ArrowUpRight className="h-3.5 w-3.5" />
-            </a>
-          )}
-        </div>
-      )}
     </div>
   );
 }
