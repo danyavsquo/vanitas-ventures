@@ -10,6 +10,8 @@ export type Startup = {
   lng: number;
   /** Shown under the name, e.g. "Vienna, Austria". */
   location?: string;
+  /** Company stage, shown as a pill in the popup header, e.g. "Early stage". */
+  stage?: string;
   /** Flag emoji for the location pill on the popup's mini map. */
   flag?: string;
   /** Website; the popup shows a "Visit" button when set. */
@@ -43,6 +45,7 @@ export const startups: Startup[] = [
     lat: 48.2082,
     lng: 16.3738,
     location: "Vienna, Austria",
+    stage: "Early stage",
     flag: "🇦🇹",
     href: "https://mazed.ai",
     icon: "/startups/mazed-mark.svg",

@@ -55,6 +55,11 @@ export function StartupPanel({
             {startup.location && (
               <span className="hidden truncate text-sm text-foreground/60 sm:inline">{startup.location}</span>
             )}
+            {startup.stage && (
+              <span className="shrink-0 rounded-full border border-foreground/20 bg-foreground/[0.08] px-2.5 py-0.5 text-xs font-medium text-foreground/85">
+                {startup.stage}
+              </span>
+            )}
           </div>
           <div className="flex shrink-0 items-center gap-2">
             {startup.href && (
@@ -62,9 +67,10 @@ export function StartupPanel({
                 href={startup.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-full bg-foreground px-4 py-1.5 text-sm font-medium text-background transition-opacity hover:opacity-85"
+                aria-label={`Visit ${startup.name} website`}
+                className="inline-flex h-9 items-center gap-1 rounded-full bg-foreground px-2.5 text-sm font-medium text-background transition-opacity hover:opacity-85 sm:px-4"
               >
-                Visit <ArrowUpRight className="h-4 w-4" />
+                <span className="hidden sm:inline">Visit</span> <ArrowUpRight className="h-4 w-4" />
               </a>
             )}
             <button
